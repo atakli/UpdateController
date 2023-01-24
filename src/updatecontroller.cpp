@@ -3,6 +3,7 @@
 
 #include <QJsonDocument>
 #include <QMessageBox>
+#include <fstream>
 #include <QFile>
 
 UpdateController::UpdateController() : httpManager(std::make_unique<HttpManager>())	{}
@@ -52,7 +53,7 @@ void UpdateController::isNewVersionAvailable()
 		QMessageBox::warning(nullptr, tr(appName.toStdString().c_str()), "Güncelleme Kontrolcüsüne parametreler geçilmemiş\nGüncelleme olup olmadığını kontrol edebilmek için gerekli parametreleri geçip tekrar deneyin");
         return;
     }
-	httpManager->downloadSynchronous(apiPath, apiUrl, "");
+    httpManager->downloadSynchronous(apiPath, apiUrl, "");
 	if (httpManager->hasError)
 		return;
 	const QString saveData = readFile(apiPath);

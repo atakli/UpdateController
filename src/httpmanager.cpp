@@ -83,7 +83,7 @@ void HttpManager::httpFinished()
 {
 	if (file)
 	{
-		file->close();
+        file->close();
 		file.reset();
 	}
 }
