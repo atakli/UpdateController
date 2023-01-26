@@ -29,7 +29,7 @@ void HttpManager::startRequest(const QUrl &requestedUrl)
 #if QT_VERSION < QT_VERSION_CHECK(5,15,3)
 	connect(reply.get(), QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), this, &HttpManager::connectionControl);
 #else
-//    connect(reply.get(), &QNetworkReply::errorOccurred, this, &HttpManager::connectionControl);
+    connect(reply.get(), &QNetworkReply::errorOccurred, this, &HttpManager::connectionControl);
 #endif
 	eventLoop.exec();
 	httpFinished();
