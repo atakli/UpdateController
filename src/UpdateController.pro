@@ -1,7 +1,7 @@
 TEMPLATE = lib
 CONFIG += console c++17
 CONFIG -= app_bundle
-#CONFIG += staticlib # bunu commentleyip derleyince de shared halini uretiyor
+CONFIG += staticlib # bunu commentleyip derleyince de shared halini uretiyor
 
 CONFIG(release, debug|release){
     CONFIG(staticlib): DESTDIR = $$OUT_PWD/release/static

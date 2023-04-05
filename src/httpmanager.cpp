@@ -99,10 +99,22 @@ void HttpManager::httpReadyRead()
 		file->write(reply->readAll());
 //	qDebug() << "bytes: " << bytes;
 }
-void HttpManager::connectionControl(QNetworkReply::NetworkError)
+void HttpManager::connectionControl(QNetworkReply::NetworkError error)
 {
-	QMessageBox::warning(nullptr, tr("Hata!"), QString("İnternete bağlanamadık. İnternet bağlantınızı kontrol edin."));
-	hasError = true;	// internet olmadığında HostNotFoundError oldu
+    qDebug() << "HttpManager::connectionControl ->" << error;
+
+    const QMetaObject metaObj = QNetworkReply::staticMetaObject;
+    const int index = metaObj.indexOfEnumerator("NetworkError");
+    const QMetaEnum metaEnum = metaObj.enumerator(index);
+    const QString errorStr = metaEnum.valueToKey(error);
+
+    hasError = true;
+    if (error == QNetworkReply::HostNotFoundError)          // bi keresinde internet olmadiginda HostNotFoundError olmustu.
+        QMessageBox::warning(nullptr, tr("Hata!"), QString("İnternete bağlanamadık. İnternet bağlantınızı kontrol edin."));
+    else if (error == QNetworkReply::ContentNotFoundError)  // api yokken, (cunku hic release yuklememistim) ContentNotFoundError dedi
+        QMessageBox::warning(nullptr, tr("Hata!"), QString("İndirilmek istenen içerik bulunamadı!"));
+    else
+        QMessageBox::warning(nullptr, tr("Hata!"), errorStr);
 //	QString logFileName = "logs.txt";
 //	std::unique_ptr<QFile> logFile = openFileForWrite(logFileName, QIODevice::Append);
 //	QString errorString = QDateTime::currentDateTime().toString() + " -> " + QVariant(error).toString();

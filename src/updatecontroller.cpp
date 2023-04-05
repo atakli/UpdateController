@@ -53,6 +53,7 @@ void UpdateController::isNewVersionAvailable()
 		QMessageBox::warning(nullptr, tr(appName.toStdString().c_str()), "Güncelleme Kontrolcüsüne parametreler geçilmemiş\nGüncelleme olup olmadığını kontrol edebilmek için gerekli parametreleri geçip tekrar deneyin");
         return;
     }
+    qDebug() << "haserror:" << httpManager->hasError;
     httpManager->downloadSynchronous(apiPath, apiUrl, "");
 	if (httpManager->hasError)
 		return;
