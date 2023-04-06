@@ -12,14 +12,7 @@ HttpManager::~HttpManager() = default;
 void HttpManager::startRequest(const QUrl &requestedUrl)
 {
 	QNetworkRequest req = QNetworkRequest(requestedUrl);
-//#if QT_VERSION < QT_VERSION_CHECK(5,15,3)
-//#if QT_VERSION < 393729                                                 // TODO: düzeltmem gerekli burayı. generic değil. sadece bana uygun
-//#if QT_VERSION < 493729                                                 // TODO: düzeltmem gerekli burayı. generic değil. sadece bana uygun
-//    req.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
-//#endif	// 331266 (linux)
-//	req.setHeader(QNetworkRequest::LocationHeader, "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0");
-
-	reply.reset(qnam.get(req));
+    reply.reset(qnam.get(req));
     connect(reply.get(), &QIODevice::readyRead, this, &HttpManager::httpReadyRead);
 #if QT_CONFIG(ssl)
     connect(reply.get(), &QNetworkReply::sslErrors, this, &HttpManager::sslErrors);
@@ -27,23 +20,22 @@ void HttpManager::startRequest(const QUrl &requestedUrl)
 	QEventLoop eventLoop;
 	connect(reply.get(), SIGNAL(finished()), &eventLoop, SLOT(quit()));
 #if QT_VERSION < QT_VERSION_CHECK(5,15,3)
-	connect(reply.get(), QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), this, &HttpManager::connectionControl);
+    connect(reply.get(), QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), this, &HttpManager::connectionError);
 #else
-    connect(reply.get(), &QNetworkReply::errorOccurred, this, &HttpManager::connectionControl);
+    connect(reply.get(), &QNetworkReply::errorOccurred, this, &HttpManager::connectionError);
 #endif
-	eventLoop.exec();
+    eventLoop.exec();   // debug ederken imlec burdan PrayerTimesParser::kalan'daki bir satira atlayip patladi. sonra farkettim ki orda ub var. bos bi vektore ait bir iterator'u dereference etmisim. gazi oldum
 	httpFinished();
 }
 void HttpManager::downloadFile(const QString fileName, const QString urlSpec)	// TODO: ismini downloadAsynchronous yap
 {
 	QUrl url = QUrl::fromUserInput(urlSpec);
 
-	file = openFileForWrite(fileName);
-	if (!file)
-		return;
+    if (!(file = openFileForWrite(fileName)))
+        return;
 	startRequest(url);	// schedule the request
 }
-void HttpManager::downloadSynchronous(QString fileName, QString urlSpec, const QString& downloadFileName)
+void HttpManager::downloadSynchronous(QString fileName, const QString& urlSpec, const QString& downloadFileName)
 {
 	bool newVersion = false;
 	QString directory;
@@ -58,11 +50,8 @@ void HttpManager::downloadSynchronous(QString fileName, QString urlSpec, const Q
 
 	QUrl url = QUrl::fromUserInput(urlSpec);
 
-	file = openFileForWrite(fileName);
-	if (!file)
-	{
-		return;
-	}
+    if (!(file = openFileForWrite(fileName)))
+        return;
 	startRequest(url);
 
 	if(newVersion)
@@ -76,7 +65,7 @@ std::unique_ptr<QFile> HttpManager::openFileForWrite(const QString &fileName, QI
 	std::unique_ptr<QFile> file = std::make_unique<QFile>(fileName);
 	if (!file->open(flag))
 	{
-        QMessageBox::information(this, tr("Error"), tr("Dosyayı kaydedemiyoruz: %1: %2.").arg(QDir::toNativeSeparators(fileName), file->errorString()));
+        QMessageBox::warning(this, tr("Error"), tr("Dosyayı kaydedemiyoruz: %1: %2.").arg(QDir::toNativeSeparators(fileName), file->errorString()));
 		return nullptr;
 	}
 	return file;
@@ -99,9 +88,9 @@ void HttpManager::httpReadyRead()
 		file->write(reply->readAll());
 //	qDebug() << "bytes: " << bytes;
 }
-void HttpManager::connectionControl(QNetworkReply::NetworkError error)
+void HttpManager::connectionError(QNetworkReply::NetworkError error)
 {
-    qDebug() << "HttpManager::connectionControl ->" << error;
+    qDebug() << "HttpManager::connectionError ->" << error;
 
     const QMetaObject metaObj = QNetworkReply::staticMetaObject;
     const int index = metaObj.indexOfEnumerator("NetworkError");

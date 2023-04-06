@@ -17,7 +17,7 @@ void UpdateController::setParameters(const QString &apiUrl, const QString &appNa
     isParametersSet = true;
 }
 
-void UpdateController::downloadFile(QString fileName, QString urlSpec, const QString& downloadFileName)
+void UpdateController::downloadFile(QString fileName, const QString& urlSpec, const QString& downloadFileName)
 {
 	httpManager->downloadSynchronous(fileName, urlSpec, downloadFileName);
 }
@@ -53,7 +53,6 @@ void UpdateController::isNewVersionAvailable()
 		QMessageBox::warning(nullptr, tr(appName.toStdString().c_str()), "Güncelleme Kontrolcüsüne parametreler geçilmemiş\nGüncelleme olup olmadığını kontrol edebilmek için gerekli parametreleri geçip tekrar deneyin");
         return;
     }
-    qDebug() << "haserror:" << httpManager->hasError;
     httpManager->downloadSynchronous(apiPath, apiUrl, "");
 	if (httpManager->hasError)
 		return;
@@ -62,7 +61,7 @@ void UpdateController::isNewVersionAvailable()
     const QJsonDocument loadDoc = QJsonDocument::fromJson(QByteArray::fromStdString(saveData.toStdString()));
 
 	const QString currentTag = readFile(versionFileName);
-    if(const QString tag = loadDoc["tag_name"].toString(); compareTagVersion(tag, currentTag))
+    if(compareTagVersion(loadDoc["tag_name"].toString(), currentTag))               // TODO: version.txt'deki ile api.json'daki aynı olmasina ragmen yeni surum bulundu diyo
     {
         if (QMessageBox(QMessageBox::Question, appName, "Yeni sürüm bulundu\nİndirilelim mi?", QMessageBox::No | QMessageBox::Yes).exec() == QMessageBox::No)
 		{

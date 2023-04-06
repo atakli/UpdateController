@@ -13,7 +13,7 @@ CONFIG(debug, debug|release){
 }
 
 #CONFIG(debug_and_release): DEFINES += LIB_SHARED LIB_BUILD_SHARED
-DEFINES += LIB_SHARED LIB_BUILD_SHARED
+#DEFINES += LIB_SHARED LIB_BUILD_SHARED
 
 QT       += network core gui widgets
 
