@@ -44,10 +44,10 @@ bool UpdateController::compareTagVersion(const QString& tagAtGithub, const QStri
     return makeIntVector(tagAtGithub) > makeIntVector(currentTag);
 }
 
-void UpdateController::isNewVersionAvailable()
+void UpdateController::isNewVersionAvailable(bool tellIsUptodate)
 {
-	QString apiPath = "api.json";
-	QString versionFileName = "version.txt";
+    const QString apiPath = "api.json";
+    const QString versionFileName = "version.txt";
     if (!isParametersSet)
     {
 		QMessageBox::warning(nullptr, tr(appName.toStdString().c_str()), "Güncelleme Kontrolcüsüne parametreler geçilmemiş\nGüncelleme olup olmadığını kontrol edebilmek için gerekli parametreleri geçip tekrar deneyin");
@@ -69,6 +69,7 @@ void UpdateController::isNewVersionAvailable()
 		}
 //            https://github.com/atakli/EtkinlikKayit/releases/latest/download/EtkinlikKayit.zip
         QString url = loadDoc["assets"][0]["browser_download_url"].toString();
+        qDebug() << "download url:" << url;
         if (!osName.isEmpty())
         {
             if (!url.endsWith(osName + ".zip", Qt::CaseInsensitive))
@@ -77,8 +78,8 @@ void UpdateController::isNewVersionAvailable()
 		httpManager->downloadSynchronous("", url, downloadFileName); // ismi PrayerReminder.zip'dan başka bişey olursa diye // TODO: 0'da sıkıntı olabilir
 //        QString url = "https://github.com/atakli/PrayerReminder-Desktop/releases/latest/download/PrayerReminder-" + osName + ".zip";
     }
-	else
-	{
-		QMessageBox::information(nullptr, tr(appName.toStdString().c_str()), "Program güncel");
+    else if (tellIsUptodate)
+    {
+        QMessageBox::information(nullptr, tr(appName.toStdString().c_str()), "Program güncel");
     }
 }

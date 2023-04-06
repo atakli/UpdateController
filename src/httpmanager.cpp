@@ -12,6 +12,9 @@ HttpManager::~HttpManager() = default;
 void HttpManager::startRequest(const QUrl &requestedUrl)
 {
 	QNetworkRequest req = QNetworkRequest(requestedUrl);
+//    req.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+//    req.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy);
+//    req.setHeader(QNetworkRequest::LocationHeader, "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0");
     reply.reset(qnam.get(req));
     connect(reply.get(), &QIODevice::readyRead, this, &HttpManager::httpReadyRead);
 #if QT_CONFIG(ssl)
