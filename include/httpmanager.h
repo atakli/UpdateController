@@ -18,12 +18,12 @@ public:
     explicit HttpManager(QWidget *parent = nullptr);
 	~HttpManager();
 	void downloadFile(const QString fileName, const QString urlSpec);
-    void downloadSynchronous(QString fileName, QString urlSpec, const QString& downloadFileName);
+    void downloadSynchronous(QString fileName, const QString& urlSpec, const QString& downloadFileName);
     bool hasError = false;
 private slots:
 	void httpFinished();
 	void httpReadyRead();
-	void connectionControl(QNetworkReply::NetworkError error);
+	void connectionError(QNetworkReply::NetworkError error);
 #if QT_CONFIG(ssl)
 	void sslErrors(const QList<QSslError> &errors);
 #endif
