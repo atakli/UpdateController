@@ -106,7 +106,7 @@ void HttpManager::connectionError(QNetworkReply::NetworkError error)
     else if (error == QNetworkReply::ContentNotFoundError)  // api yokken, (cunku hic release yuklememistim) ContentNotFoundError dedi
         QMessageBox::warning(nullptr, tr("Hata!"), QString("İndirilmek istenen içerik bulunamadı!"));
     else
-        QMessageBox::warning(nullptr, tr("Hata!"), errorStr);
+        QMessageBox::warning(nullptr, tr("Hata!"), errorStr);   // protocol unknown error dedi bi ara. indirdi ama 0 kb. ondan hemen sonra tekrar denedim bu sefer tus cevap vermiyo
 //	QString logFileName = "logs.txt";
 //	std::unique_ptr<QFile> logFile = openFileForWrite(logFileName, QIODevice::Append);
 //	QString errorString = QDateTime::currentDateTime().toString() + " -> " + QVariant(error).toString();
