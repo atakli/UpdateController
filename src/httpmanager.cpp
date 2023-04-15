@@ -62,6 +62,32 @@ void HttpManager::downloadSynchronous(QString fileName, const QString& urlSpec, 
 		QMessageBox::information(nullptr, tr("Yeni versiyon"), QString(directory + " klasörüne indirildi."));
 	}
 }
+void HttpManager::downloadSynchronous(const QString& fileName, const QString& url, bool chooseDir)
+{
+    QString downloadFileName = fileName;
+    QString directory;
+    if(chooseDir)
+    {
+        directory = QFileDialog::getExistingDirectory(this, tr("Yeni sürümü indireceğiniz klasörü seçin"));
+        if(directory == "")                                                                                 // TODO
+            return;
+        downloadFileName = directory + "/" + fileName;  // TODO: burda seperator buydu neydi o hale getir
+    }
+
+    const QUrl urlSpec = QUrl::fromUserInput(url);
+
+    if (!(file = openFileForWrite(downloadFileName)))
+    {
+        qDebug() << "downloadSynchronous fonksiyonunda dosya acilamadi!";
+        return;
+    }
+    startRequest(urlSpec);
+
+    if(chooseDir)
+    {
+        QMessageBox::information(nullptr, tr("Yeni versiyon"), QString(directory + " klasörüne indirildi."));
+    }
+}
 
 std::unique_ptr<QFile> HttpManager::openFileForWrite(const QString &fileName, QIODevice::OpenModeFlag flag)
 {
