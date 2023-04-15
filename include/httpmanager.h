@@ -19,6 +19,7 @@ public:
 	~HttpManager();
 	void downloadFile(const QString fileName, const QString urlSpec);
     void downloadSynchronous(QString fileName, const QString& urlSpec, const QString& downloadFileName);
+    void downloadSynchronous(const QString& fileName, const QString& url, bool chooseDir = false);
     bool hasError = false;
 private slots:
 	void httpFinished();
