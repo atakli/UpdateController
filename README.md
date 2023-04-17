@@ -10,8 +10,8 @@ update.isNewVersionAvailable();
 
 İlk argüman github api adresi. İkinci, uygulamanın dosya yolu. Üçüncüsü, github reposundan indirilecek dosya ismi.
 
-Son argüman olan `versionFileFullPath` isteğe bağlıdır. Verilmezse programın varsayılan çalışma yolundaki "version.txt" isminde bir dosya varmış gibi işlem yapılır.<br>
-isNewVersionAvailable'a true geçildiğinde programın güncel olduğunu da haber verir. Yoksa sadece güncel değilse haber verir.
+Son argüman olan `versionFileFullPath` isteğe bağlıdır. Verilmezse programın varsayılan çalışma yolunda "version.txt" isminde bir dosya varmış gibi işlem yapılır.<br>
+isNewVersionAvailable'a true geçildiğinde programın güncel olduğunda da haber verir. Yoksa sadece güncel değilse haber verir.
 
 version.txt dosyasının içeriği v0.4.2-Windows formatında olmalıdır.
 
@@ -21,7 +21,7 @@ Ayrıca bir dosya indirmek için de downloadFile fonksiyonu kullanılabilir:
 ```
 update.downloadFile(evkatOnlinePath, url);
 ```
-Argümanlar sırasıyla, dosyanın bilgisayarda indirilecek dosyanın tam yolu ve web adres linki.
+Argümanlar sırasıyla, dosyanın bilgisayarda indirileceği tam yolu ve web adres linki.
 
 ### TODO:
 * indirilirken progress bar göster
